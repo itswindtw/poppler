@@ -149,11 +149,11 @@ documentNewFromData ::
  -> IO (Maybe Document) -- ^ returns  A newly created 'Document', or 'Nothing'  
 documentNewFromData dat password = 
   maybeNull (wrapNewGObject mkDocument) $
-  withUTFString dat $ \ datPtr -> 
+  withCStringLen dat $ \(datPtr, datLen) -> 
   maybeWith withUTFString password $ \ passwordPtr -> 
       propagateGError ({#call poppler_document_new_from_data #}
                        datPtr
-                       (fromIntegral (length dat))
+                       (fromIntegral datLen)
                        passwordPtr)
 
 -- | Saves document. Any change made in the document such as form fields filled by the user will be
